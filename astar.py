@@ -123,9 +123,10 @@ def algorithm(draw, grid, start, end):
         open_set_hash.remove(current)
 
         if current == end:
+            distance = g_score[end]  # The final distance to the end node
             reconstruct_path(came_from, end, draw)
             end.make_end()
-            return True
+            return distance
 
         for neighbor in current.neighbors:
             temp_g_score = g_score[current] + 1
@@ -145,7 +146,7 @@ def algorithm(draw, grid, start, end):
         if current != start:
             current.make_closed()
 
-    return False
+    return -1  # Return -1 if no path is found
 
 
 def make_grid(rows, width):
@@ -234,7 +235,11 @@ def main(win, width):
                         for spot in row:
                             spot.update_neighbors(grid)
 
-                    algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
+                    distance = algorithm(lambda: draw(win, grid, ROWS, width), grid, start, end)
+                    if distance != -1:
+                        print(f"Distance from Start to End: {distance}")
+                    else:
+                        print("No Path Found!")
 
                 if event.key == pygame.K_c:
                     start = None
